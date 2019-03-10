@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<DefaultResponse> call, Throwable t) {
+                Log.d("ERERERER", String.valueOf(t.getStackTrace()));
 
             }
         });
