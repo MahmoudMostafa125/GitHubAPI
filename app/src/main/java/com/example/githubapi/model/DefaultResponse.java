@@ -199,7 +199,7 @@ public class DefaultResponse {
     private Integer forksCount;
     @SerializedName("mirror_url")
     @Expose
-    private Object mirrorUrl;
+    private String mirrorUrl;
     @SerializedName("archived")
     @Expose
     private Boolean archived;
@@ -734,11 +734,11 @@ public class DefaultResponse {
         this.forksCount = forksCount;
     }
 
-    public Object getMirrorUrl() {
+    public String getMirrorUrl() {
         return mirrorUrl;
     }
 
-    public void setMirrorUrl(Object mirrorUrl) {
+    public void setMirrorUrl(String mirrorUrl) {
         this.mirrorUrl = mirrorUrl;
     }
 
