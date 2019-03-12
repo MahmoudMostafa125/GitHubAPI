@@ -49,9 +49,15 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
     public void onBindViewHolder(@NonNull repoAdapter.GitViewHolder holder, final int position) {
 
         final DefaultResponse results = MyGitList.get(position);
-        holder.title.setText(results.getFullName());
-        holder.discreption.setText(results.getDescription());
-        holder.name.setText(results.getName());
+        if (results.getFullName() != null) {
+            holder.title.setText(results.getFullName());
+        }
+        if (results.getDescription() != null) {
+            holder.discreption.setText(results.getDescription());
+        }
+        if (results.getName() != null) {
+            holder.name.setText(results.getName());
+        }
 
         if (results.getFork() || results.getFork() == null) {
             holder.cardView.setCardBackgroundColor(Color.parseColor("#7CFC00"));
@@ -84,7 +90,8 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
         });
 
     }
-//////////
+
+    //////////
     @Override
     public int getItemViewType(int position) {
         return position;
