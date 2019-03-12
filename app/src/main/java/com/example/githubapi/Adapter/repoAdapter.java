@@ -1,7 +1,20 @@
 package com.example.githubapi.Adapter;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.githubapi.CustomDialogClass;
 import com.example.githubapi.R;
 import com.example.githubapi.model.DefaultResponse;
 
@@ -36,7 +50,44 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
 
         final DefaultResponse results = MyGitList.get(position);
         holder.title.setText(results.getFullName());
+        holder.discreption.setText(results.getDescription());
+        holder.name.setText(results.getName());
 
+        if (results.getFork() || results.getFork() == null) {
+            holder.cardView.setCardBackgroundColor(Color.parseColor("#7CFC00"));
+        }
+
+
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+               /* String url = results.getOwner().getHtmlUrl();
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                mCtx.startActivity(i);*/
+                FragmentTransaction ft = ((AppCompatActivity) mCtx).getSupportFragmentManager().beginTransaction();
+                Fragment prev = ((AppCompatActivity) mCtx).getSupportFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+                DialogFragment dialogFragment = new CustomDialogClass();
+                Bundle args = new Bundle();
+                args.putString("ownerURL", results.getOwner().getHtmlUrl());
+                args.putString("repoURL", results.getHtmlUrl());
+                dialogFragment.setArguments(args);
+                dialogFragment.show(ft, "dialog");
+
+
+                return false;
+            }
+        });
+
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override
@@ -45,11 +96,15 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
     }
 
     public class GitViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
+        TextView title, discreption, name;
+        CardView cardView;
 
         public GitViewHolder(View itemview) {
             super(itemview);
             title = itemview.findViewById(R.id.rename);
+            discreption = itemview.findViewById(R.id.desc);
+            name = itemview.findViewById(R.id.ownername);
+            cardView = itemview.findViewById(R.id.card);
         }
     }
 

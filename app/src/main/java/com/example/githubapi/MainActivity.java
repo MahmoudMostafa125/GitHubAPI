@@ -2,6 +2,7 @@ package com.example.githubapi;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.githubapi.Adapter.repoAdapter;
 import com.example.githubapi.Api.RetrofitClient;
+import com.example.githubapi.Utilities.internetConnection;
 import com.example.githubapi.model.DefaultResponse;
 
 import java.util.List;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     LinearLayoutManager layoutManager;
     ProgressBar progressBar;
+    SwipeRefreshLayout swipeRefreshLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +51,13 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rec);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+        swipeRefreshLayout = findViewById(R.id.refresh);
 
-        Call<List<DefaultResponse>> call = RetrofitClient.getInstance().getApi()
+        if (!internetConnection.internetConnectionAvailable(1000)) {
+           // progressBar.setVisibility(View.GONE);
+            Toast.makeText(cox, "You Are Offline now", Toast.LENGTH_SHORT).show();
+        }
+        Call<List<DefaultResponse>> call = RetrofitClient.getInstance(cox).getApi()
                 .GitApi(String.valueOf(page_number),
                         String.valueOf(item_count),
                         Constants.Token);
@@ -95,11 +104,53 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // cancel the Visual indication of a refresh
+                swipeRefreshLayout.setRefreshing(false);
+                repoList.clear();
+                adapter.notifyDataSetChanged();
+                page_number = 1;
+                isLoading = true;
+                pastVisbleItem = 0;
+                visibleItemCount = 0;
+                TotalItemCount = 0;
+                PreviousTotal = 0;
+                threshold = 10;
+                Call<List<DefaultResponse>> call = RetrofitClient.getInstance(cox).getApi()
+                        .GitApi(String.valueOf(page_number),
+                                String.valueOf(item_count),
+                                Constants.Token);
+                call.enqueue(new Callback<List<DefaultResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<DefaultResponse>> call, Response<List<DefaultResponse>> response) {
+
+                        if (response.isSuccessful()) {
+                            if (response.body() != null) {
+                                repoList = response.body();
+                            }
+                        }
+                        adapter = new repoAdapter(cox, response.body());
+                        recyclerView.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<DefaultResponse>> call, Throwable t) {
+                        Log.e("error_retrofit", String.valueOf(t.getMessage()));
+                    }
+                });
+
+                // shuffleItems();
+            }
+        });
     }
 
     private void Pagenation() {
         progressBar.setVisibility(View.VISIBLE);
-        Call<List<DefaultResponse>> call = RetrofitClient.getInstance().getApi()
+        Call<List<DefaultResponse>> call = RetrofitClient.getInstance(cox).getApi()
                 .GitApi(String.valueOf(page_number),
                         String.valueOf(item_count),
                         Constants.Token);
@@ -107,12 +158,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<DefaultResponse>> call, Response<List<DefaultResponse>> response) {
 
-                if (!response.body().isEmpty()) {
-                    List<DefaultResponse> repoListss = response.body();
-                    adapter.addRepo(repoListss);
-                    Toast.makeText(MainActivity.this, "Page" + page_number + " Is Loaded", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "No Data", Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful()) {
+                    if (!response.body().isEmpty()) {
+                        List<DefaultResponse> repoListss = response.body();
+                        adapter.addRepo(repoListss);
+                        Toast.makeText(MainActivity.this, "Page" + page_number + " Is Loaded", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "No Data", Toast.LENGTH_SHORT).show();
+                    }
+                    progressBar.setVisibility(View.GONE);
                 }
                 progressBar.setVisibility(View.GONE);
             }
