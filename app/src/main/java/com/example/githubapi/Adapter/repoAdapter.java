@@ -84,7 +84,7 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
         });
 
     }
-
+//////////
     @Override
     public int getItemViewType(int position) {
         return position;
