@@ -67,10 +67,7 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-               /* String url = results.getOwner().getHtmlUrl();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                mCtx.startActivity(i);*/
+
                 FragmentTransaction ft = ((AppCompatActivity) mCtx).getSupportFragmentManager().beginTransaction();
                 Fragment prev = ((AppCompatActivity) mCtx).getSupportFragmentManager().findFragmentByTag("dialog");
                 if (prev != null) {
