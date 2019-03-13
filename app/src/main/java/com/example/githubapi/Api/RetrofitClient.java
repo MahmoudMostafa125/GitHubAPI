@@ -1,16 +1,8 @@
 package com.example.githubapi.Api;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.example.githubapi.Constants;
 import com.example.githubapi.Utilities.internetConnection;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 

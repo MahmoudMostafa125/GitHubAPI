@@ -1,13 +1,8 @@
 package com.example.githubapi.Adapter;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentManager;
+
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -16,7 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +53,7 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
             holder.name.setText(results.getName());
         }
 
-        if (results.getFork() || results.getFork() == null) {
+        if (!results.getFork() || results.getFork() == null) {
             holder.cardView.setCardBackgroundColor(Color.parseColor("#7CFC00"));
         }
 
