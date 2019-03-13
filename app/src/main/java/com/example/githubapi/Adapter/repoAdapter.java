@@ -80,8 +80,6 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
                 args.putString("repoURL", results.getHtmlUrl());
                 dialogFragment.setArguments(args);
                 dialogFragment.show(ft, "dialog");
-
-
                 return false;
             }
         });
@@ -112,7 +110,7 @@ public class repoAdapter extends RecyclerView.Adapter<repoAdapter.GitViewHolder>
         }
     }
 
-
+    //add new repo items to the list
     public void addRepo(List<DefaultResponse> GitList) {
         for (DefaultResponse DR : GitList) {
             MyGitList.add(DR);

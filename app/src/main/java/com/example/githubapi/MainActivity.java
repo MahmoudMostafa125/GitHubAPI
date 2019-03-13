@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.refresh);
 
         if (!internetConnection.internetConnectionAvailable(1000)) {
-           // progressBar.setVisibility(View.GONE);
             Toast.makeText(cox, "You Are Offline now", Toast.LENGTH_SHORT).show();
         }
         Call<List<DefaultResponse>> call = RetrofitClient.getInstance(cox).getApi()
@@ -142,12 +141,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("error_retrofit", String.valueOf(t.getMessage()));
                     }
                 });
-
-                // shuffleItems();
             }
         });
     }
 
+    //make pagination
     private void Pagenation() {
         progressBar.setVisibility(View.VISIBLE);
         Call<List<DefaultResponse>> call = RetrofitClient.getInstance(cox).getApi()

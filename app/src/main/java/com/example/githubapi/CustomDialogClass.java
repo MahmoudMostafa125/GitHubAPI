@@ -14,7 +14,6 @@ import android.widget.Button;
 public class CustomDialogClass extends DialogFragment implements
         android.view.View.OnClickListener {
 
-    public Activity c;
     public Button owner, repo;
     String LinkOwner, LinkRepo;
 
@@ -32,6 +31,7 @@ public class CustomDialogClass extends DialogFragment implements
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.custom_dialog, container, false);
+        //get data from bundle
         LinkOwner = getArguments().getString("ownerURL");
         LinkRepo = getArguments().getString("repoURL");
 

@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.githubapi.Constants;
 import com.example.githubapi.Utilities.internetConnection;
 
 import java.io.File;
@@ -24,41 +25,30 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "https://api.github.com/";
+
     private static RetrofitClient mInstance;
     private Retrofit retrofit;
     static Context context;
 
-    /*OkHttpClient client = new OkHttpClient.Builder()
-            .cache(cache)
-            .build();*/
 
     private RetrofitClient() {
-        Long cacheSize = Long.valueOf(3 * 1024 * 1024); // 10 MiB
+        Long cacheSize = Long.valueOf(3 * 1024 * 1024); //size of cache 3 MB
         //File cacheDir = new File(context.getCacheDir(), "HttpCache");
         Cache cache = new Cache(context.getCacheDir(), cacheSize);
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
-
                 .cache(cache)
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain)
                             throws IOException {
                         Request request = chain.request();
+                        //check if connected to internet
                         if (!internetConnection.internetConnectionAvailable(1000)) {
-                        /*    Handler mHandler = new Handler(Looper.getMainLooper()) {
-                                @Override
-                                public void handleMessage(Message message) {
-                                    // This is where you do your work in the UI thread.
-                                    // Your worker tells you in the message what to do.
-                                    Toast.makeText(context, "You Are Offline now", Toast.LENGTH_SHORT).show();
-                                }
-                            };*/
-
-                            int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale \
+                            //cache data for 28 days
+                            int maxStale = 60 * 60 * 24 * 28;
                             request = request
                                     .newBuilder()
                                     .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
@@ -75,7 +65,7 @@ public class RetrofitClient {
 
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.mainLink)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
@@ -89,22 +79,21 @@ public class RetrofitClient {
         return mInstance;
     }
 
+    //make instant from retrofit
     public Api getApi() {
         return retrofit.create(Api.class);
     }
 
-    private static final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
+/*    private static final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
         @Override
         public Response intercept(Interceptor.Chain chain) throws IOException {
             Response originalResponse = chain.proceed(chain.request());
             if (internetConnection.internetConnectionAvailable(1000)) {
-                Log.e("fdfdfdfd", "Connnected");
                 int maxAge = 60; // read from cache for 1 minute
                 return originalResponse.newBuilder()
                         .header("Cache-Control", "public, max-age=" + maxAge)
                         .build();
             } else {
-                Log.e("fdfdfdfd", "Not Connected");
                 int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
                 return originalResponse.newBuilder()
                         .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
@@ -112,6 +101,6 @@ public class RetrofitClient {
                 //  Toast.makeText(context.getApplicationContext(), "dsdws", Toast.LENGTH_SHORT).show();
             }
         }
-    };
+    };*/
 }
 
