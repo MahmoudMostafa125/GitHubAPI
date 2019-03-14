@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // cancel the Visual indication of a refresh
                 swipeRefreshLayout.setRefreshing(false);
                 repoList.clear();
                 adapter.notifyDataSetChanged();
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //make pagination
+    //make pagination 10 items per page
     private void Pagenation() {
         progressBar.setVisibility(View.VISIBLE);
         Call<List<DefaultResponse>> call = RetrofitClient.getInstance(cox).getApi()

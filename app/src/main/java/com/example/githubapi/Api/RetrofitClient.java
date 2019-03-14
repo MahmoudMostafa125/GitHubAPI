@@ -1,8 +1,10 @@
 package com.example.githubapi.Api;
 
 import android.content.Context;
+
 import com.example.githubapi.Constants;
 import com.example.githubapi.Utilities.internetConnection;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -76,23 +78,5 @@ public class RetrofitClient {
         return retrofit.create(Api.class);
     }
 
-/*    private static final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
-        @Override
-        public Response intercept(Interceptor.Chain chain) throws IOException {
-            Response originalResponse = chain.proceed(chain.request());
-            if (internetConnection.internetConnectionAvailable(1000)) {
-                int maxAge = 60; // read from cache for 1 minute
-                return originalResponse.newBuilder()
-                        .header("Cache-Control", "public, max-age=" + maxAge)
-                        .build();
-            } else {
-                int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
-                return originalResponse.newBuilder()
-                        .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
-                        .build();
-                //  Toast.makeText(context.getApplicationContext(), "dsdws", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };*/
 }
 
